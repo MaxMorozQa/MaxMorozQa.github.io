@@ -51,7 +51,7 @@
             const item = elements.item(i);
             obj[item.name] = item.value;
         }
-        const raw = `${obj.order_id}${obj.amount}${obj['info[0][name]']}${obj['info[0][quantity]']}${obj['info[0][amount]']}s4MxRG43fqmKRHlsmBT9qnuulfjoisrf`
+        const raw = `${obj.order_id}${obj.amount}${obj['info[0][name]']}${obj['info[0][quantity]']}${obj['info[0][amount]']}4DiwGF4b8ujLbyejMVCEUS5fllxs97zj`
         document.getElementById("signature").value = await sha256(raw);
 
         const elementsNew = document.getElementById("form").elements;
