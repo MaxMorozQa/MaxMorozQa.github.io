@@ -1,0 +1,65 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>TEST</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="selfwork.ru" content="ikLwvqK1L2zdIkhYiVLBV3iw3VRKQPlZjpD4zdp2dMalRpNyve" />
+</head>
+<body style="height: 4000px">
+
+<main class="page-main">
+    <form id="form" action="https://pro.selfwork.ru/merchant/v1/init" method="POST">
+        <input type="hidden" name="amount" value="100">
+        <input type="hidden" name="info[0][name]" value="Cвитер ручной работы">
+        <input type="hidden" name="info[0][quantity]" value="1">
+        <input type="hidden" name="info[0][amount]" value="100">
+        <input type="hidden" id="order_id" name="order_id" value="">
+        <input type="hidden" id="signature" name="signature" value="">
+        <button type="submit" id="smz-init-payment-button">Оплатить</button>
+    </form>
+</main>
+
+<script src="https://pro.selfwork.ru/merchant-app/smz-init-payment.js"></script>
+<!-- https://emn178.github.io/online-tools/sha256.html -->
+<!-- 97e196c0-a344-4230-a0291000Cвитер ручной работы11000s4MxRG43fqmKRHlsmBT9qnuulfjoisrf -->
+
+
+</body>
+<script>
+    async function sha256(message) {
+        // encode as UTF-8
+        const msgBuffer = new TextEncoder().encode(message);
+
+        // hash the message
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+
+        // convert ArrayBuffer to Array
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+        // convert bytes to hex string
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    }
+
+    async function createSign() {
+        document.getElementById("order_id").value = Date.now();
+        const elements = document.getElementById("form").elements;
+        const obj = {};
+        for(let i = 0 ; i < elements.length ; i++){
+            const item = elements.item(i);
+            obj[item.name] = item.value;
+        }
+        const raw = `${obj.order_id}${obj.amount}${obj['info[0][name]']}${obj['info[0][quantity]']}${obj['info[0][amount]']}s4MxRG43fqmKRHlsmBT9qnuulfjoisrf`
+        document.getElementById("signature").value = await sha256(raw);
+
+        const elementsNew = document.getElementById("form").elements;
+        for(let i = 0 ; i < elementsNew.length ; i++){
+            const item = elements.item(i);
+            console.log(`${item.name} = ${item.value}`);
+        }
+    }
+    createSign();
+</script>
+</html>
